@@ -1,5 +1,5 @@
 {
-  "name": "mantine-next-template",
+  "name": "summar-ai",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,6 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "export": "next build && next export",
-    "lint": "next lint",
     "prettier:check": "prettier --check \"**/*.{ts,tsx}\"",
     "prettier:write": "prettier --write \"**/*.{ts,tsx}\"",
     "storybook": "start-storybook -p 7001",
@@ -38,29 +37,17 @@
   },
   "devDependencies": {
     "@babel/core": "^7.17.8",
-    "@next/eslint-plugin-next": "^12.1.4",
     "@storybook/react": "^6.5.13",
     "@testing-library/dom": "^8.12.0",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^14.0.4",
     "@types/node": "^18.11.4",
     "@types/react": "18.0.21",
-    "@typescript-eslint/eslint-plugin": "^5.30.0",
-    "@typescript-eslint/parser": "^5.30.0",
     "babel-loader": "^8.2.4",
-    "eslint": "^8.18.0",
-    "eslint-config-airbnb": "19.0.4",
-    "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-config-mantine": "2.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsx-a11y": "^6.6.0",
-    "eslint-plugin-react": "^7.30.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-storybook": "^0.5.7",
-    "eslint-plugin-testing-library": "^5.2.0",
     "prettier": "^2.7.1",
     "storybook-addon-turbo-build": "^1.1.0",
     "storybook-dark-mode": "^1.1.2",
-    "typescript": "4.8.4"
+    "typescript": "4.8.4",
+    "tsconfig": "workspace:*"
   }
 }

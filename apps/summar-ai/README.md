@@ -12,7 +12,6 @@ This template comes with several essential features:
 - Color scheme is stored in cookie to avoid color scheme mismatch after hydration
 - Storybook with color scheme toggle
 - Jest with react testing library
-- ESLint setup with [eslint-config-mantine](https://github.com/mantinedev/eslint-config-mantine)
 
 ## npm scripts
 
@@ -26,7 +25,6 @@ This template comes with several essential features:
 ### Testing scripts
 
 - `typecheck` – checks TypeScript types
-- `lint` – runs ESLint
 - `prettier:check` – checks files with Prettier
 - `jest` – runs jest tests
 - `jest:watch` – starts jest watch

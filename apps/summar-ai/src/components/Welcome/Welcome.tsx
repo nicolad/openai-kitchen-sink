@@ -1,4 +1,4 @@
-import { Title, Text, Anchor, TextInput, Checkbox, Button, Group, Box } from '@mantine/core';
+import { Title, Text, TextInput, Checkbox, Button, Group, Box } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import useStyles from './Welcome.styles';
 
