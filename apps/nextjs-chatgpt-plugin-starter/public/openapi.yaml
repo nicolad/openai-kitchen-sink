@@ -2,9 +2,9 @@ openapi: 3.0.1
 info:
   title: TODO Plugin
   description: A plugin that allows the user to create and manage a TODO list using ChatGPT.
-  version: 'v1'
+  version: "v1"
 servers:
-  - url: https://next-gpt-plugin-starter-k1t5sdjx3-vadimnicolai.vercel.app
+  - url: https://next-gpt-plugin.vercel.app
 paths:
   /api/todos:
     get:
@@ -16,7 +16,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getTodosResponse'
+                $ref: "#/components/schemas/getTodosResponse"
   /api/create-todo:
     post:
       operationId: addTodo
@@ -26,7 +26,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/addTodoRequest'
+              $ref: "#/components/schemas/addTodoRequest"
       responses:
         "200":
           description: OK
@@ -39,7 +39,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/deleteTodoRequest'
+              $ref: "#/components/schemas/deleteTodoRequest"
       responses:
         "200":
           description: OK
@@ -48,7 +48,7 @@ components:
     deleteTodoRequest:
       type: object
       required:
-      - todo
+        - todo
       properties:
         todo:
           type: string
@@ -57,7 +57,7 @@ components:
     addTodoRequest:
       type: object
       required:
-      - todo
+        - todo
       properties:
         todo:
           type: string

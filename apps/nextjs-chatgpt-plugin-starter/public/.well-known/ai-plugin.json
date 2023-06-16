@@ -9,10 +9,10 @@
   },
   "api": {
     "type": "openapi",
-    "url": "https://next-gpt-plugin-starter-7ru6n0ews-vadimnicolai.vercel.app/openapi.yaml",
+    "url": "https://next-gpt-plugin.vercel.app/openapi.yaml",
     "is_user_authenticated": false
   },
-  "logo_url": "https://next-gpt-plugin-starter-7ru6n0ews-vadimnicolai.vercel.app/logo.png",
+  "logo_url": "https://next-gpt-plugin.vercel.app/logo.png",
   "contact_email": "support@example.com",
   "legal_info_url": "https://example.com/legal"
 }
