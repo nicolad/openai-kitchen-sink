@@ -10,7 +10,8 @@
   },
   "devDependencies": {
     "prettier": "^2.7.1",
-    "turbo": "latest"
+    "turbo": "latest",
+    "next": "13.3.0"
   },
   "packageManager": "pnpm@7.15.0"
 }
