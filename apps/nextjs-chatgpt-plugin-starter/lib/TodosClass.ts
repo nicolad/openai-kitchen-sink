@@ -1,22 +1,23 @@
-interface Todo {
-  [key: string]: string
-}
-type TodosType = Todo[]
+import { components } from "../schema";
+
+type Todo = components["schemas"]["Todo"];
+type TodoList = components["schemas"]["TodoList"];
 
 class TodosClass {
-  todos: TodosType = []
+  todos: TodoList["todos"] = [];
   createTodo = (todo: Todo) => {
-    this.todos = [...this.todos, todo]
+    this.todos = [...this?.todos, todo];
+  };
+  getTodos(): TodoList {
+    const todos = this.todos;
+    return { todos };
   }
-  getTodos():TodosType {
-    return this.todos
-  }
-  deleteTodo(todo:Todo):void {
-    const index = this.todos.findIndex(item => item.todo === todo.todo)
-    this.todos.splice(index, 1)
+  deleteTodo(todo: Todo): void {
+    const index = this?.todos?.findIndex((x) => x?.todo === x?.todo);
+    this.todos.splice(index, 1);
   }
 }
 
-const Todos = new TodosClass()
+const Todos = new TodosClass();
 
-export { Todos }
+export { Todos };

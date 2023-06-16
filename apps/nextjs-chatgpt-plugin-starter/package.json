@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate": "pnpx openapi-typescript ./public/openapi.yaml -o ./schema.d.ts"
   },
   "dependencies": {
     "@types/cors": "^2.8.13",
