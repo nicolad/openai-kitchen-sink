@@ -1,0 +1,97 @@
+---
+slug: getters
+title: Implementing Getters in ink! Smart Contracts
+authors: [nicolad]
+---
+
+import Svg from './image.svg';
+
+<Svg
+  style={{
+    width: '100%',
+    height: '300px',
+  }}
+/>
+
+In ink! smart contracts, unlike Solidity, getters for storage items need to be manually implemented. In this article, we'll explore how to create getters using traits in ink! and OpenBrush, providing easy access to contract state and data.
+
+Trait for Getters:
+To create getters in ink!, we'll start by creating a trait called "Pair" in the [`./logics/traits/pair.rs`](https://github.com/nicolad/dex/blob/main/uniswap-v2/logics/traits/pair.rs) file. This trait will define the getter functions and annotate them with `#[ink(message)]` to make them callable. Here's an example of the trait definition:
+
+```rust
+pub trait Pair {
+    // Getter for retrieving the current reserves of the pair
+    // Returns a tuple containing the balances of token0, token1, and the block timestamp
+    #[ink(message)]
+    fn get_reserves(&self) -> (Balance, Balance, Timestamp);
+
+    // Initialization function for setting the initial values of token0 and token1
+    // Takes the account IDs of token0 and token1 as input
+    // Returns Ok(()) if successful, or an error if initialization fails
+    #[ink(message)]
+    fn initialize(&mut self, token_0: AccountId, token_1: AccountId) -> Result<(), PairError>;
+
+
+    // Getter for retrieving the account ID of token0
+    // Returns the account ID of token0
+    #[ink(message)]
+    fn get_token_0(&self) -> AccountId;
+
+
+    // Getter for retrieving the account ID of token1
+    // Returns the account ID of token1
+    #[ink(message)]
+    fn get_token_1(&self) -> AccountId;
+}
+
+```
+
+Wrapper and Cross-Contract Calls:
+To make the trait accessible for cross-contract calls without importing the contract as an ink dependency, we can create a wrapper using OpenBrush.
+
+Import the necessary traits from OpenBrush and define a wrapper type called `PairRef` using
+`#[openbrush::wrapper]`. Here's an example:
+
+```rust
+use openbrush::traits::{
+    AccountId,
+    Balance,
+    Timestamp,
+};
+
+/// Type alias for a dynamic reference to a `Pair` trait object.
+#[openbrush::wrapper]
+pub type PairRef = dyn Pair;
+
+#[openbrush::trait_definition]
+pub trait Pair {
+    #[ink(message)]
+    fn get_reserves(&self) -> (Balance, Balance, Timestamp);
+
+    #[ink(message)]
+    fn initialize(&mut self, token_0: AccountId, token_1: AccountId) -> Result<(), PairError>;
+
+    #[ink(message)]
+    fn get_token_0(&self) -> AccountId;
+
+    #[ink(message)]
+    fn get_token_1(&self) -> AccountId;
+}
+```
+
+Error Handling:
+To handle errors in the getter functions, we'll define an Error enum in the same file. This enum should implement Scale encode and decode as it will be used in function arguments. Here's a basic example:
+
+```rust
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+pub enum PairError {
+    Error,
+}
+```
+
+In this article, we learned how to implement getters in ink! smart contracts using traits and OpenBrush. By defining a trait with getter functions and using the #[ink(message)] attribute, we can easily access contract state and data. The OpenBrush wrapper enables cross-contract calls without the need for importing the contract as a dependency. Additionally, we briefly covered error handling by defining an Error enum.
+
+By leveraging these techniques, you can enhance the functionality and usability of your ink! smart contracts, making them more efficient and developer-friendly.
+
+Remember to import the necessary traits and follow the provided code examples to implement getters effectively in your ink! smart contracts.

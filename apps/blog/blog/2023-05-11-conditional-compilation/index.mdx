@@ -1,0 +1,151 @@
+---
+slug: conditional-compilation-in-rust-smart-contracts
+title: Conditional Compilation in Rust - Controlling Code with Features
+authors: [nicolad]
+---
+
+Conditional compilation is a powerful feature in Rust that allows you to include or exclude certain sections of code based on compile-time conditions. It provides a way to control which parts of your code are compiled and executed, depending on the enabled features or configurations. This capability is particularly useful when developing libraries or applications that need to support different platforms or have optional functionalities.
+
+In this article, we'll explore the concept of conditional compilation in Rust and demonstrate its usage with a practical example. We'll walk through a smart contract implementation using the `ink!` framework and showcase how conditional compilation can be leveraged to enable or disable specific features based on the provided feature flags.
+
+## Introduction to Conditional Compilation
+
+Rust's conditional compilation is achieved using the `cfg` attribute, which allows you to conditionally include or exclude code based on a set of defined conditions. These conditions can be Rust's built-in attributes or custom-defined feature flags.
+
+Here's an example of conditional compilation in Rust:
+
+```rust
+#[cfg(feature = "my_feature")]
+fn do_something() {
+    // Code to execute when "my_feature" is enabled
+}
+
+#[cfg(not(feature = "my_feature"))]
+fn do_something() {
+    // Code to execute when "my_feature" is disabled
+}
+
+fn main() {
+    do_something();
+}
+```
+
+In this example, the `do_something` function is defined twice, with different configurations based on whether the "my_feature" feature is enabled or disabled. The `cfg` attribute allows the Rust compiler to select the appropriate version of the function based on the provided conditions.
+
+## Building a Smart Contract with Conditional Compilation
+
+Let's dive into a practical example of using conditional compilation in the context of smart contract development with the `ink!` framework. We'll create a smart contract that represents a simple flipper, allowing us to flip a boolean value and retrieve its current state.
+
+```rust
+#![cfg_attr(not(feature = "std"), no_std)]
+use ink::traits::AccountId;
+
+// Define the Flip trait
+#[ink::trait_definition]
+pub trait Flip {
+    #[ink(message)]
+    fn flip(&mut self);
+
+    #[ink(message)]
+    fn get(&self) -> bool;
+
+    // Method with conditional compilation
+    #[cfg(feature = "foo")]
+    #[ink(message)]
+    fn push_foo(&mut self, value: bool);
+}
+
+// Define the ConditionalCompilation contract
+#[ink::contract]
+pub mod conditional_compilation {
+    use super::Flip;
+
+    // Define the storage struct for ConditionalCompilation
+    #[ink(storage)]
+    pub struct ConditionalCompilation {
+        value: bool,
+    }
+
+    impl ConditionalCompilation {
+        // Constructor for ConditionalCompilation
+        #[ink(constructor)]
+        pub fn new() -> Self {
+            Self {
+                value: Default::default(),
+            }
+        }
+
+        // Constructor with "foo" feature enabled
+        #[cfg(feature = "foo")]
+        #[ink(constructor)]
+        pub fn new_foo(value: bool) -> Self {
+            Self { value }
+        }
+    }
+
+    // Implement the Flip trait for ConditionalCompilation
+    impl Flip for ConditionalCompilation {
+        #[ink(message)]
+        fn flip(&mut self) {
+            self.value = !self.value;
+        }
+
+        #[ink(message)]
+        fn get(&self) -> bool {
+            self.value
+        }
+
+        // Method implementation with conditional compilation
+        #[cfg(feature = "foo")]
+        #[ink(message)]
+        fn push_foo(&mut self, value: bool) {
+            self.value = value;
+        }
+    }
+
+    // Unit tests
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[ink::test]
+        fn default_works() {
+            let flipper = ConditionalCompilation::new();
+            assert!(!flipper.get());
+        }
+
+        #[ink::test]
+        fn it_works() {
+            let mut flipper = ConditionalCompilation::new();
+            assert!(!flipper.get());
+            flipper.flip();
+            assert!(flipper.get());
+        }
+
+        // Unit test with conditional compilation
+        #[cfg(feature = "foo")]
+        #[ink::test]
+        fn foo_works() {
+            let mut flipper = ConditionalCompilation::new_foo(false);
+            assert!(!flipper.get());
+            flipper.push_foo(true);
+            assert!(flipper.get());
+        }
+    }
+}
+
+```
+
+In this example, we define a trait `Flip` that specifies the required behavior for a flipper smart contract. It includes functions to flip the boolean value and retrieve the current value. Additionally, it includes the `push_foo` function, which is conditionally compiled with the "foo" feature.
+
+The `conditional_compilation` module contains the implementation of the smart contract. It includes the `ConditionalCompilation` struct as the storage for the flipper contract. The struct has a boolean field to store the current value.
+
+Conditional compilation is used to include or exclude the `push_foo` function based on the "foo" feature. If the "foo" feature is enabled, the `push_foo` function can be called to push a new value into the flipper. Otherwise, the function is excluded from the compiled code.
+
+The `impl` block for the `Flip` trait includes the implementations of the flip and get functions, which are common to all instances of the flipper contract.
+
+In the unit tests section, we test the default behavior of the flipper, the flip function, and the `push_foo` function (conditionally compiled with the "foo" feature). These tests ensure the correctness of the flipper contract's behavior based on the enabled features.
+
+Overall, this code demonstrates how conditional compilation can be used to selectively include or exclude certain functionality in a smart contract based on the enabled features. It provides flexibility in customizing the behavior of the contract based on specific requirements or configurations.
+
+The information and some code examples in this article are derived from the official [ink-examples](https://github.com/paritytech/ink-examples/blob/main/conditional-compilation/lib.rs) repository maintained by Parity Technologies. The repository provides a collection of example smart contracts implemented using the ink! framework, including the conditional compilation example used in this article.
