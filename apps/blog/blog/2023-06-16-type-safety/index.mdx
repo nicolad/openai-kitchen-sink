@@ -1,81 +1,34 @@
 ---
-slug: using-openbrush-library-for-specialization-in-rust-contracts
-title: How to Implement Specialization with OpenBrush in Your Rust Smart Contract
+slug: building-type-safe-chatgpt-plugins-with-openapi-and-typescript
+title: Building Type-Safe ChatGPT Plugins with OpenAPI and TypeScript
 authors: [nicolad]
 image: image.png
 ---
 
-import Svg from './image.svg';
+import Svg from "./image.svg";
 
 <Svg />
 
-If you're developing smart contracts on the Substrate framework, you might be interested in the OpenBrush library, which provides a set of reusable modules and traits for specialized contract development. In this article, we'll cover the basics of how to import and use OpenBrush in your project.
+Introduction:
+ChatGPT, the powerful language model developed by OpenAI, now supports Plugin capabilities, allowing users to extend its functionality and interact with it using plugins. In this article, we will explore how the combination of OpenAPI and TypeScript can enhance the development of ChatGPT plugins, ensuring type safety and streamlined integration.
 
-### Getting Started
+1. Understanding ChatGPT Plugins:
+   ChatGPT plugins offer users the ability to enhance their interactions with the language model. By installing and enabling plugins, users can leverage specialized capabilities such as real-time information retrieval, knowledge base access, and performing actions on their behalf. This extensibility empowers users to customize ChatGPT to their specific needs, opening up a world of possibilities.
 
-OpenBrush uses ink! version `4.0.0` at the moment, so you will need to use the same version of ink! in your project. If you use a different version of ink, you need to use a different version of OpenBrush which uses the same version of ink!. OpenBrush had several significant changes in API, so you check the [Wizard](https://openbrush.io) to study how to use different versions of OpenBrush.
+2. The Role of OpenAPI Specification:
+   The OpenAPI Specification (OAS) serves as the standard for ChatGPT plugins. It provides a comprehensive, machine-readable format for defining APIs and their capabilities. Plugins in ChatGPT utilize OpenAPI endpoints and API document files to specify their functions and enable seamless integration with the model. This standardization allows the AI model to understand and effectively utilize the APIs defined by plugin developers.
 
-The OpenBrush library provides default implementations of traits that can be enabled via crate features. A list of all available features can be found [here](https://github.com/727-Ventures/openbrush-contracts/blob/main/Cargo.toml#L51). The default implementation of traits requires the usage of the unstable feature [min-specialization](https://doc.rust-lang.org/beta/unstable-book/language-features/min-specialization.html). You can enable it by adding `#![feature(min_specialization)]` at the top of your root module (for more information, check the [Rust official documentation](https://doc.rust-lang.org/rustdoc/unstable-features.html)).
+3. Leveraging TypeScript for Type Safety:
+   TypeScript, a superset of JavaScript, brings static typing to the development process, enhancing code reliability and maintainability. When building ChatGPT plugins, using TypeScript ensures type safety throughout the development lifecycle. It helps catch potential errors early and provides enhanced IntelliSense and code navigation, leading to better developer productivity.
 
-By default, the `openbrush` crate provides macros for simplification of the development and traits of contracts. Some default implementations for traits provide additional methods that can be overridden. These methods are defined in a separate internal trait. If you want to override them, you need to do that in the `impl` section of the internal trait. If you imported several internal traits, you could specify which one you want to use, `psp22::Internal` or `psp34::Internal`.
+4. Generating TypeScript Declarations from OpenAPI:
+   To streamline the development process, code generators such as "openapi-typescript" can be utilized. These tools automatically generate TypeScript declaration files based on the OpenAPI specification. By running a simple command like `pnpx openapi-typescript ./public/openapi.yaml -o ./schema.d.ts`, developers can obtain type definitions for API requests, responses, and more. This approach saves time, minimizes manual effort, and promotes consistency between the defined API structure and the generated TypeScript code.
 
-Here is the default `toml` of your project with OpenBrush:
+5. Ensuring Code Consistency and Adherence:
+   By leveraging the OpenAPI specification and the generated TypeScript declarations, developers can ensure their ChatGPT plugin code adheres to the defined API contract. The TypeScript type system acts as a safety net, preventing common mistakes and providing clear guidance on how to interact with the plugin's API endpoints. This level of consistency and adherence enhances code quality, improves collaboration, and facilitates the development of robust, reliable plugins.
 
-```toml
-[dependencies]
-# Import ink!
-ink = { version = "4.1.0", default-features = false}
+6. Enhancing Development Productivity:
+   The combination of OpenAPI and TypeScript not only provides type safety but also enhances development productivity. With well-defined API contracts and automatically generated TypeScript code, developers can focus on writing the business logic of their plugins rather than dealing with manual type annotations. The development workflow becomes more efficient, reducing the chances of errors and speeding up the overall plugin development process.
 
-scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
-scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
-
-# Brush dependency
-openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "~3.0.0", default-features = false }
-
-[features]
-default = ["std"]
-std = [
-  "ink/std",
-  "scale/std",
-  "scale-info/std",
-  # Brush dependency
-  "openbrush/std",
-]
-ink-as-dependency = []
-```
-
-> **_Note:_** ink! requires putting `#![cfg_attr(not(feature = "std"), no_std)]` at the top of the root crate.
-
-### Reusing Implementation of Traits from OpenBrush
-
-To use the OpenBrush library, you'll first need to enable the corresponding feature in your `Cargo.toml`. The name of the feature is the same as the name of the module. For example, to enable `psp22`:
-
-```toml
-openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", version = "~3.0.0", default-features = false, features = ["psp22
-```
-
-## Diagrams
-
-Here is a diagram that shows the difference between a non-specialized contract and a specialized contract:
-
-```mermaid
-graph TD;
-    A[Non-specialized Contract] --> B(Specialized Contract);
-```
-
-And here is a diagram that shows how OpenBrush can be used in your project:
-
-```mermaid
-graph TD;
-    A[Your Rust Smart Contract] --> B(OpenBrush);
-    B --> C{Specialization};
-    C --> |"Trait Implementation"| D[Your Specialized Contract];
-```
-
-### Conclusion
-
-In this article, we covered the basics of using the OpenBrush library for specialized contract development in Rust. We discussed how to import and use OpenBrush in your project, how to enable the corresponding features, and how to reuse implementations of traits from OpenBrush.
-
-By using OpenBrush, you can save time and effort when developing specialized contracts. It provides a set of reusable modules and traits that can simplify your development process and make your code more concise and readable. With OpenBrush, you can easily create specialized contracts that are tailored to your specific use case.
-
-If you're interested in learning more about OpenBrush, you can check out the [official documentation](https://learn.brushfam.io/docs/openbrush).
+Conclusion:
+Building ChatGPT plugins with OpenAPI and TypeScript brings numerous advantages to the table. The OpenAPI Specification provides a standardized approach for defining plugin APIs, while TypeScript ensures type safety and enhances code reliability. By leveraging code generators like "openapi-typescript," developers can streamline the process of generating TypeScript declarations and focus on the core functionality of their plugins. This combination empowers developers to deliver robust, type-safe plugins that seamlessly integrate with ChatGPT, enabling the creation of customized, powerful conversational experiences.
