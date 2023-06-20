@@ -1,17 +1,10 @@
-// Importing necessary modules from their respective locations
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'; // For splitting text into smaller chunks
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'; // For creating document embeddings using OpenAI
 import { PineconeStore } from 'langchain/vectorstores/pinecone'; // For storing document vectors in Pinecone
-import { PDFLoader } from 'langchain/document_loaders/fs/pdf'; // For loading PDF documents
-import { DirectoryLoader } from 'langchain/document_loaders/fs/directory'; // For loading documents from a directory
-import { DocxLoader } from 'langchain/document_loaders/fs/docx'; // For loading DOCX documents
-import { TextLoader } from 'langchain/document_loaders/fs/text'; // For loading text documents
 import { NextApiRequest, NextApiResponse } from 'next'; // Next.js API route support
-import fs from 'fs'; // Node.js file system module
 import { initPinecone } from '@/utils/pinecone-client'; // Function to initialize Pinecone client
 
-// Determine the file path depending on the environment
-const filePath = process.env.NODE_ENV === 'production' ? '/tmp' : 'tmp'; // Path for storing files
+import { DocumentLoader, fileCleanup } from '../../utils/documentProcessing';
 
 // Define the async function to handle the request and response of the Next.js API route
 export default async function handler(
@@ -34,15 +27,11 @@ export default async function handler(
   const { namespaceName, chunkSize, overlapSize } = req.query;
 
   try {
-    // Initialize a new DirectoryLoader with handlers for PDF, DOCX, and TXT files
-    const directoryLoader = new DirectoryLoader(filePath, {
-      '.pdf': (path) => new PDFLoader(path),
-      '.docx': (path) => new DocxLoader(path),
-      '.txt': (path) => new TextLoader(path),
-    });
+    // Instantiate the DocumentLoader
+    const docLoader = new DocumentLoader();
 
-    // Load documents using the DirectoryLoader
-    const rawDocs = await directoryLoader.load();
+    // Load the documents
+    const documents = await docLoader.loadDocuments();
 
     // Initialize a new RecursiveCharacterTextSplitter with given parameters
     const textSplitter = new RecursiveCharacterTextSplitter({
@@ -51,7 +40,7 @@ export default async function handler(
     });
 
     // Split documents into smaller chunks
-    const docs = await textSplitter.splitDocuments(rawDocs);
+    const docs = await textSplitter.splitDocuments(documents);
 
     // Initialize a new OpenAIEmbeddings with the OpenAI API key
     const embeddings = new OpenAIEmbeddings({
@@ -68,20 +57,7 @@ export default async function handler(
       textKey: 'text',
     });
 
-    // Read the file directory and filter out PDF, DOCX, and TXT files
-    const filesToDelete = fs
-      .readdirSync(filePath)
-      .filter(
-        (file) =>
-          file.endsWith('.pdf') ||
-          file.endsWith('.docx') ||
-          file.endsWith('.txt'),
-      );
-
-    // Delete the PDF, DOCX and TXT files
-    filesToDelete.forEach((file) => {
-      fs.unlinkSync(`${filePath}/${file}`);
-    });
+    fileCleanup('./tmp');
 
     // Send a successful response with a message
     res.status(200).json({ message: 'Data ingestion complete' });

@@ -27,8 +27,6 @@ export default function Settings() {
   const [submitClicked, setSubmitClicked] = useState(false);
   const [namespaceName, setNamespaceName] = useState<string>('');
   const [deleteMessage, setDeleteMessage] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('');
   const [uploadMessage, setUploadMessage] = useState<string>('');
   const [error, setError] = useState<{ message: string; customString: string }>(
     {
@@ -151,45 +149,6 @@ export default function Settings() {
         customString: 'An error occured trying to upload files',
       });
     }
-  };
-
-  const handleIngest = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `/api/consume?namespaceName=${namespaceName}&chunkSize=${chunkSize}&overlapSize=${overlapSize}`,
-        {
-          method: 'POST',
-          headers: {
-            'X-OpenAI-Key': openAIapiKey,
-            'X-Pinecone-Key': pineconeApiKey,
-            'X-Index-Name': pineconeIndexName,
-            'X-Environment': pineconeEnvironment,
-          },
-        },
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setMessage(data.message);
-
-        setTimeout(() => {
-          // setMessage('');
-        }, 1000);
-        fetchNamespaces();
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error);
-      }
-    } catch (error: any) {
-      setError({
-        message: error.message,
-        customString: 'Error ingesting files',
-      });
-    }
-
-    setLoading(false);
   };
 
   return (
@@ -470,16 +429,6 @@ export default function Settings() {
                     />
                   </div>
                 </div>
-              </div>
-            )}
-            {namespaceName && (
-              <div className="mt-4 sm:mt-8 flex justify-end">
-                <button
-                  className="rounded-md bg-indigo-500 px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 text-center text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                  onClick={handleIngest}
-                >
-                  {loading ? 'Ingesting...' : message ? message : 'Ingest'}
-                </button>
               </div>
             )}
           </div>

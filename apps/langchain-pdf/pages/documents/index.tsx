@@ -155,9 +155,8 @@ export default function Settings() {
   const handleIngest = async () => {
     try {
       setLoading(true);
-
       const response = await fetch(
-        `/api/consume?namespaceName=${namespaceName}&chunkSize=${chunkSize}&overlapSize=${overlapSize}`,
+        `/api/ingestDocumentsAndEmbed?namespaceName=${namespaceName}&chunkSize=${chunkSize}&overlapSize=${overlapSize}`,
         {
           method: 'POST',
           headers: {
