@@ -4,9 +4,11 @@
 const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
+const title = "OpenAI Beyond";
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "OpenAI Beyond",
+  title,
   tagline: "",
   favicon: "img/favicon.ico",
 
@@ -64,9 +66,9 @@ const config = {
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
       navbar: {
-        title: "The AI Almanac: ChatGPT, OpenAI, and Beyond",
+        title,
         logo: {
-          alt: "The AI Almanac Logo",
+          alt: "The Logo",
           src: "img/logo.svg",
         },
         items: [
