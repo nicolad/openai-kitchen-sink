@@ -149,6 +149,8 @@ graph TB
     H[Split Documents] --> I[Generate Embeddings]
 ```
 
+More info about embedding generation can be found [here](/decoding-the-magic-of-text-embeddings-with-openai).
+
 ### 5. Storage in Pinecone
 
 Once the embeddings are generated, the document chunks along with their embeddings are stored in Pinecone, a vector database service. The documents are stored in a specific Pinecone index, which is accessed using the provided index name.
