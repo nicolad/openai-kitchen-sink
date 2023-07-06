@@ -1,77 +1,27 @@
 "use client"
 
-import React, { useState } from "react"
-import Head from "next/head"
+import React, { useEffect } from "react"
 import Link from "next/link"
 import { useCredentialsCookie } from "@/context/credentials-context"
 import { Button, Input } from "antd"
-
-import { Label } from "@/components/ui/label"
+import { Controller, useForm } from "react-hook-form"
 
 export default function CredentialsPage() {
   const { cookieValue, setAndSaveCookieValue } = useCredentialsCookie()
-  const [openaiApiKey, setOpenaiApiKey] = useState(cookieValue.openaiApiKey)
-  const [pineconeEnvironment, setPineconeEnvironment] = useState(
-    cookieValue.pineconeEnvironment
-  )
-  const [pineconeIndex, setPineconeIndex] = useState(cookieValue.pineconeIndex)
-  const [pineconeApiKey, setPineconeApiKey] = useState(
-    cookieValue.pineconeApiKey
-  )
-  const [supabaseKey, setSupabaseKey] = useState(cookieValue.supabaseKey)
-  const [supabaseUrl, setSupabaseUrl] = useState(cookieValue.supabaseUrl)
-  const [supabaseDatabaseUrl, setSupabaseDatabaseUrl] = useState(
-    cookieValue.supabaseDatabaseUrl
-  )
-  const [supabaseDirectUrl, setSupabaseDirectUrl] = useState(
-    cookieValue.supabaseDirectUrl
-  )
+  const { handleSubmit, control, setValue, getValues } = useForm()
 
-  const [supabaseBucket, setSupabaseBucket] = useState(
-    cookieValue.supabaseBucket
-  )
-
-  console.log("cookieValue", cookieValue)
-
-  const handleOpenaiApiKeyChange = (e) => {
-    setOpenaiApiKey(e.target.value)
-  }
-  const handlePineconeEnvironmentChange = (e) => {
-    setPineconeEnvironment(e.target.value)
-  }
-  const handlePineconeIndexChange = (e) => {
-    setPineconeIndex(e.target.value)
-  }
-  const handlePineconeApiKeyChange = (e) => {
-    setPineconeApiKey(e.target.value)
-  }
-  const handleSupabaseKeyChange = (e) => {
-    setSupabaseKey(e.target.value)
-  }
-  const handleSupabaseUrlChange = (e) => {
-    setSupabaseUrl(e.target.value)
-  }
-  const handleSupabaseBucketChange = (e) => {
-    setSupabaseBucket(e.target.value)
-  }
-  const handleSupabaseDatabaseUrlChange = (e) => {
-    setSupabaseDatabaseUrl(e.target.value)
-  }
-  const handleSupabaseDirectUrlChange = (e) => {
-    setSupabaseDirectUrl(e.target.value)
-  }
+  useEffect(() => {
+    if (cookieValue) {
+      const { openaiApiKey, replicateApiKey } = cookieValue
+      setValue("openaiApiKey", openaiApiKey)
+      setValue("replicateApiKey", replicateApiKey)
+    }
+  }, [cookieValue, setValue])
 
   const handleSaveCredentials = () => {
     setAndSaveCookieValue({
-      openaiApiKey,
-      pineconeEnvironment,
-      pineconeIndex,
-      pineconeApiKey,
-      supabaseKey,
-      supabaseUrl,
-      supabaseBucket,
-      supabaseDatabaseUrl,
-      supabaseDirectUrl,
+      openaiApiKey: getValues("openaiApiKey"),
+      replicateApiKey: getValues("replicateApiKey"),
     })
   }
 
@@ -140,20 +90,44 @@ export default function CredentialsPage() {
           </ol>
         </div>
 
-        <Label htmlFor="openai-api-key" className="text-right">
-          OpenAI API Key
-        </Label>
-
-        <Input.Password
-          value={openaiApiKey}
-          defaultValue={openaiApiKey}
-          placeholder="sk-***************************"
-          onChange={handleOpenaiApiKeyChange}
-        />
-
-        <Button type="primary" onClick={handleSaveCredentials}>
-          Save Credentials
-        </Button>
+        <form
+          onSubmit={handleSubmit(handleSaveCredentials)}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "baseline",
+            gap: "1rem",
+          }}
+        >
+          <Controller
+            name="openaiApiKey"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <Input.Password
+                {...field}
+                addonBefore="OpenAI API Key"
+                placeholder="sk-***************************"
+                style={{ width: 500 }}
+              />
+            )}
+          />
+          <Controller
+            name="replicateApiKey"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <Input.Password
+                {...field}
+                addonBefore="Replicate API Key"
+                style={{ width: 500 }}
+              />
+            )}
+          />
+          <Button type="primary" htmlType="submit">
+            Save Credentials
+          </Button>
+        </form>
       </div>
     </section>
   )
