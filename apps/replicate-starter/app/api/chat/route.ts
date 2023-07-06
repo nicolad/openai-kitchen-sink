@@ -1,13 +1,13 @@
+import { NextRequest, NextResponse } from "next/server"
+
 import { getChain } from "@/lib/langchain/chain"
 import { ModelHandler } from "@/lib/langchain/model"
 import { getPineconeStore } from "@/lib/langchain/vectorstores/pinecone"
-import { NextRequest, NextResponse } from "next/server"
 
 export const runtime = "edge"
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
-  // Get credentials from cookies
   const credentials = JSON.parse(
     request.cookies.get("credentials")?.value || null
   )

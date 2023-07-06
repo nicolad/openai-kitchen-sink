@@ -1,16 +1,13 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import { CredentialsCookieProvider } from "@/context/credentials-context"
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
-import { SiteHeader } from "@/components/site-header"
-import { TailwindIndicator } from "@/components/tailwind-indicator"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Analytics } from "@vercel/analytics/react";
-import { CredentialsCookieProvider } from "@/context/credentials-context"
 import { Toaster } from "@/components/ui/toaster"
-
+import { SiteHeader } from "@/components/site-header"
+import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   title: {
@@ -45,16 +42,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <CredentialsCookieProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <SiteHeader />
-              <div className="flex-1">{children}</div>
-            </div>
-            <TailwindIndicator />
-            <Toaster />
-        </CredentialsCookieProvider>
+            <CredentialsCookieProvider>
+              <div className="relative flex min-h-screen flex-col">
+                <SiteHeader />
+                <div className="flex-1">{children}</div>
+              </div>
+              <Toaster />
+            </CredentialsCookieProvider>
           </ThemeProvider>
-          <Analytics />
         </body>
       </html>
     </>
