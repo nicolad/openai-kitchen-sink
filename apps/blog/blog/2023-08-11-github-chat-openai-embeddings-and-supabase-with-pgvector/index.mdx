@@ -1,0 +1,159 @@
+---
+slug: github-chat-openai-embeddings-and-supabase-with-pgvector
+title: Building GitHub Chat Using OpenAI Embeddings, Supabase with pgVector, and LangChain
+authors: [nicolad]
+image: image.png
+---
+
+### Introduction
+
+In the age of AI-driven development and cloud computing, building a GitHub Chat using OpenAI, Supabase with pgVector, and LangChain symbolizes the merging of cutting-edge technologies. In this article, we'll explore the integration of these tools, focusing particularly on LangChain's innovative GitLoader component.
+
+#### LangChain's GitLoader: A Comprehensive Tool for Managing Git Repositories
+
+LangChain, as a part of this solution, provides specialized components designed to work with text documents. Among these, the GitLoader stands out as an essential tool for managing Git repositories.
+
+##### Functionality
+
+- **Loading Repositories:** GitLoader can load files from a local Git repository or clone them from a remote URL.
+- **Branch Selection:** It allows the user to specify the branch to load files from, defaulting to the main branch.
+- **File Filtering:** An optional parameter lets the user define a function to decide whether to load a particular file.
+- **Document Handling:** Several methods, such as load, lazy_load, and load_and_split, facilitate various ways of working with documents in the repository.
+
+Here's a Mermaid.js diagram representing these functionalities:
+
+```mermaid
+classDiagram
+    GitLoader --|> Repository : loads from
+    class GitLoader {
+        +repo_path: str
+        +clone_url: Optional[str]
+        +branch: Optional[str]
+        +file_filter: Optional[Callable[[str], bool]]
+        +__init__(repo_path, clone_url, branch, file_filter)
+        +lazy_load(): Iterator[Document]
+        +load(): List[Document]
+        +load_and_split(text_splitter): List[Document]
+    }
+    class Repository {
+        +path: str
+    }
+```
+
+This diagram shows the GitLoader class and its association with a general Repository class, illustrating how GitLoader interacts with the repositories.
+
+LangChain's GitLoader is a comprehensive tool that simplifies the process of working with Git repositories. Its extensive functionalities and well-designed API make it a valuable asset for developers working with text files in repositories. With clear methods for initialization and file handling, it is a powerful part of the LangChain library, reflecting the broader trends in text processing and management in modern software development.
+
+#### Processing and Embedding Documents with OpenAI and Supabase
+
+Below are diagrams representing the process of loading, processing, embedding, and storing documents using various components, including OpenAI embeddings and Supabase.
+
+##### Processing and Embedding
+
+```mermaid
+classDiagram
+    direction TB
+    class ProcessAndEmbed {
+        +initialize_client()
+        +load_and_process_documents()
+        +embed_and_store_vectors()
+    }
+    ProcessAndEmbed --> SupabaseClient
+    ProcessAndEmbed --> DocumentProcessing
+    ProcessAndEmbed --> VectorEmbedding
+```
+
+##### Document Processing
+
+```mermaid
+classDiagram
+    direction TB
+    class DocumentProcessing {
+        +load_documents()
+        +exclude_files_and_dirs()
+        +split_and_clean_text()
+    }
+    class TextLoader {
+        +load(file_path, encoding): List[Document]
+    }
+    class CharacterTextSplitter {
+        +split_documents(documents): List[Document]
+    }
+    DocumentProcessing --> TextLoader
+    DocumentProcessing --> CharacterTextSplitter
+```
+
+##### Vector Embedding and Storage
+
+```mermaid
+classDiagram
+    direction TB
+    class VectorEmbedding {
+        +embed_vectors()
+        +store_vectors()
+    }
+    class OpenAIEmbeddings {
+        +from_documents(docs, openai_api_key): Embeddings
+    }
+    class SupabaseVectorStore {
+        +from_documents(docs, embeddings, client, table_name, content_column_name)
+    }
+    VectorEmbedding --> OpenAIEmbeddings
+    VectorEmbedding --> SupabaseVectorStore
+```
+
+---
+
+This article provides insights into the novel integration of OpenAI, Supabase, LangChain, and other technologies to craft a complex GitHub Chat system. By leveraging these cutting-edge tools, developers can harness the power of AI and cloud computing to create intelligent and scalable applications.
+
+```mermaid
+graph TB
+    A[ask_question Function] --> B[Environment Setup]
+    A --> C[Supabase Client Creation]
+    A --> D[Vector Store Configuration]
+    A --> E[Query and Match Processing]
+    A --> F[Chat Configuration and Response]
+    B --> B1[Load Environment Variables]
+    C --> C1[Client Connection]
+    D --> D1[Embeddings]
+    D --> D2[Vector Store]
+    E --> E1[Matched Docs]
+    E --> E2[Code Files]
+    F --> F1[Chat Initialization]
+    F --> F2[Response]
+```
+
+```mermaid
+graph LR
+    A[create_client] --> B[Supabase Client]
+    B --> C[Supabase URL]
+    B --> D[Supabase Service Key]
+```
+
+```mermaid
+graph TB
+    A[SupabaseVectorStore] --> B[Embeddings]
+    A --> C[Supabase Client]
+    A --> D[Table Name]
+    A --> E[Query Name]
+    A --> F[similarity_search Method]
+    F --> G[Query]
+    F --> H[Matched Docs]
+```
+
+```mermaid
+graph LR
+    A[ChatOpenAI] --> B[Callback Manager]
+    A --> C[StreamingStdOutCallbackHandler]
+    A --> D[Temperature]
+    B --> E[StreamingStdOutCallbackHandler]
+    F[LLMChain] --> A
+    F --> G[ChatPromptTemplate]
+    F --> H[SystemMessagePromptTemplate]
+    F --> I[run Method]
+    I --> J[Response]
+```
+
+```
+
+```
