@@ -87,15 +87,7 @@ export default function Home() {
                 {/* Page content inside a collapsible panel */}
               </Panel>
             </Collapse>
-            <Paragraph>
-              <strong>Author:</strong> {data.author}
-            </Paragraph>
-            <Paragraph>
-              <strong>View Count:</strong> {data.view_count}
-            </Paragraph>
-            <Paragraph>
-              <strong>Video Length:</strong> {data.length} seconds
-            </Paragraph>
+            <Divider />
             <a
               href={`https://www.youtube.com/watch?v=${data.source}`}
               target="_blank"
