@@ -5,7 +5,6 @@ import { useChat, type Message } from 'ai/react'
 import { cn } from '@/lib/utils'
 import { ChatList } from '@/components/chat-list'
 import { ChatPanel } from '@/components/chat-panel'
-import { EmptyScreen } from '@/components/empty-screen'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import {
@@ -16,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
@@ -34,6 +33,12 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   )
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
+  const [emailContext, setEmailContext] = useState('') // For storing the email context
+  const [emailSubject, setEmailSubject] = useState('')
+  const [emailBody, setEmailBody] = useState('')
+  // recipient name
+  const [recipientName, setRecipientName] = useState('')
+
   const { messages, append, reload, stop, isLoading, input, setInput } =
     useChat({
       initialMessages,
@@ -48,20 +53,66 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         }
       }
     })
+
+  const lastMessage = messages?.[messages?.length - 1]
+
+  useEffect(() => {
+    try {
+      const content = JSON.parse(lastMessage?.content ?? '{}')
+      const { subject, body } = content
+      setEmailSubject(subject)
+      setEmailBody(body)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [lastMessage])
+
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
+        <div className="flex my-4 mx-8">
+          <div className="flex-1 mr-2">
+            <textarea
+              className="w-full h-48 p-2 border rounded"
+              placeholder="Context"
+              value={emailContext}
+              onChange={e => setEmailContext(e.target.value)}
+            ></textarea>
+            <input
+              className="w-full p-2 border rounded mb-2"
+              type="text"
+              placeholder="Recipient Name"
+              value={recipientName}
+              onChange={e => setRecipientName(e.target.value)}
+            />
+          </div>
+
+          <div className="flex-1 ">
+            <input
+              className="w-full p-2 border rounded mb-2"
+              type="text"
+              placeholder="Email Subject"
+              value={emailSubject}
+              onChange={e => setEmailSubject(e.target.value)}
+            />
+            <textarea
+              className="w-full h-32 p-2 border rounded"
+              placeholder="Email Body"
+              value={emailBody}
+              onChange={e => setEmailBody(e.target.value)}
+            ></textarea>
+          </div>
+        </div>
         {messages.length ? (
           <>
-            <ChatList messages={messages} />
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>
-        ) : (
-          <EmptyScreen setInput={setInput} />
-        )}
+        ) : null}
       </div>
       <ChatPanel
         id={id}
+        emailContext={emailContext}
+        recipientName={recipientName}
         isLoading={isLoading}
         stop={stop}
         append={append}
@@ -70,7 +121,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         input={input}
         setInput={setInput}
       />
-
       <Dialog open={previewTokenDialog} onOpenChange={setPreviewTokenDialog}>
         <DialogContent>
           <DialogHeader>

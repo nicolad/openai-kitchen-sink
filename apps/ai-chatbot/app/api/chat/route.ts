@@ -1,9 +1,13 @@
-import { kv } from '@vercel/kv'
-import { OpenAIStream, StreamingTextResponse } from 'ai'
+import { NextRequest, NextResponse } from 'next/server'
+import { Message as VercelChatMessage, StreamingTextResponse } from 'ai'
 import { Configuration, OpenAIApi } from 'openai-edge'
 
-import { auth } from '@/auth'
-import { nanoid } from '@/lib/utils'
+import { z } from 'zod'
+import { zodToJsonSchema } from 'zod-to-json-schema'
+
+import { ChatOpenAI } from 'langchain/chat_models/openai'
+import { PromptTemplate } from 'langchain/prompts'
+import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 
 export const runtime = 'edge'
 
@@ -11,57 +15,86 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
 
-const openai = new OpenAIApi(configuration)
+const TEMPLATE = `Extract the requested fields from the input.
 
-export async function POST(req: Request) {
-  const json = await req.json()
-  const { messages, previewToken } = json
-  const userId = (await auth())?.user.id
+The field "entity" refers to the first mentioned entity in the input.
 
-  if (!userId) {
-    return new Response('Unauthorized', {
-      status: 401
-    })
-  }
+Write a email
 
-  if (previewToken) {
-    configuration.apiKey = previewToken
-  }
+Input:
 
-  const res = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    messages,
-    temperature: 0.7,
-    stream: true
-  })
+{input}`
 
-  const stream = OpenAIStream(res, {
-    async onCompletion(completion) {
-      const title = json.messages[0].content.substring(0, 100)
-      const id = json.id ?? nanoid()
-      const createdAt = Date.now()
-      const path = `/chat/${id}`
-      const payload = {
-        id,
-        title,
-        userId,
-        createdAt,
-        path,
-        messages: [
-          ...messages,
-          {
-            content: completion,
-            role: 'assistant'
-          }
-        ]
-      }
-      await kv.hmset(`chat:${id}`, payload)
-      await kv.zadd(`user:chat:${userId}`, {
-        score: createdAt,
-        member: `chat:${id}`
-      })
+/**
+ * This handler initializes and calls an OpenAI Functions powered
+ * structured output chain. See the docs for more information:
+ *
+ * https://js.langchain.com/docs/modules/chains/popular/structured_output
+ */
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json()
+    try {
+      const { input, context } = body ? JSON.parse(body ?? {}) : ''
+
+      console.log({ input, context })
+    } catch (e) {
+      console.log(e)
     }
-  })
 
-  return new StreamingTextResponse(stream)
+    const messages = body.messages ?? []
+    const currentMessageContent = messages[messages.length - 1].content
+
+    const prompt = PromptTemplate.fromTemplate(TEMPLATE)
+    /**
+     * Function calling is currently only supported with ChatOpenAI models
+     */
+    const model = new ChatOpenAI({
+      temperature: 0.8,
+      modelName: 'gpt-4',
+      openAIApiKey: process.env.OPENAI_API_KEY
+    })
+
+    /**
+     * We use Zod (https://zod.dev) to define our schema for convenience,
+     * but you can pass JSON Schema directly if desired.
+     */
+    const schema = z.object({
+      subject: z.string().describe('Email subject'),
+      body: z.string().describe('Email body')
+    })
+
+    /**
+     * Bind the function and schema to the OpenAI model.
+     * Future invocations of the returned model will always use these arguments.
+     *
+     * Specifying "function_call" ensures that the provided function will always
+     * be called by the model.
+     */
+    const functionCallingModel = model.bind({
+      functions: [
+        {
+          name: 'output_formatter',
+          description: 'Should always be used to properly format output',
+          parameters: zodToJsonSchema(schema)
+        }
+      ],
+      function_call: { name: 'output_formatter' }
+    })
+
+    /**
+     * Returns a chain with the function calling model.
+     */
+    const chain = prompt
+      .pipe(functionCallingModel)
+      .pipe(new JsonOutputFunctionsParser())
+
+    const result = await chain.invoke({
+      input: currentMessageContent
+    })
+
+    return NextResponse.json(result, { status: 200 })
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 500 })
+  }
 }
