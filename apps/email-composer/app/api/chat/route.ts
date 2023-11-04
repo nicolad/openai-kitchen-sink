@@ -21,19 +21,11 @@ Input:
 
 {input}`
 
-/**
- * This handler initializes and calls an OpenAI Functions powered
- * structured output chain. See the docs for more information:
- *
- * https://js.langchain.com/docs/modules/chains/popular/structured_output
- */
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     try {
       const { input, context } = body ? JSON.parse(body ?? {}) : ''
-
-      console.log({ input, context })
     } catch (e) {
       console.log(e)
     }
@@ -60,13 +52,6 @@ export async function POST(req: NextRequest) {
       body: z.string().describe('Email body')
     })
 
-    /**
-     * Bind the function and schema to the OpenAI model.
-     * Future invocations of the returned model will always use these arguments.
-     *
-     * Specifying "function_call" ensures that the provided function will always
-     * be called by the model.
-     */
     const functionCallingModel = model.bind({
       functions: [
         {

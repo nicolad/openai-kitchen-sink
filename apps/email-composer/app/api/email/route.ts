@@ -2,17 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import type { SentMessageInfo } from 'nodemailer'
 
-type Data = {
-  [key: string]: string | boolean | string[]
-}
-
 export async function POST(req: NextRequest) {
   try {
-    const { body, subject } = await req.json()
+    const { body, subject, emailAddress } = await req?.json()
     const html = body.replace(/\n/g, '<br>')
 
     const transporter = nodemailer.createTransport({
-      // host: process.env.MAILER_HOST,
       host: 'smtp.gmail.com',
       port: 587,
       secure: false,
@@ -25,7 +20,7 @@ export async function POST(req: NextRequest) {
     const info: SentMessageInfo = await transporter.sendMail({
       // from: email as string,
       from: 'nicolai.vadim@gmail.com',
-      to: 'nicolai.vadim@gmail.com',
+      to: emailAddress,
       subject: subject,
       html
     })

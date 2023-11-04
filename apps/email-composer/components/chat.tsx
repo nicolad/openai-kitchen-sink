@@ -32,7 +32,8 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   )
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
-  const [emailContext, setEmailContext] = useState('') // For storing the email context
+  const [emailContext, setEmailContext] = useState('')
+  const [emailAddress, setEmailAddress] = useState('')
   const [emailSubject, setEmailSubject] = useState('')
   const [emailBody, setEmailBody] = useState('')
   const [recipientName, setRecipientName] = useState('')
@@ -68,6 +69,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const handleSendEmail = useCallback(async () => {
     try {
       const response = await axios.post('/api/email', {
+        emailAddress,
         subject: emailSubject,
         body: emailBody,
         recipientName
@@ -114,6 +116,13 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
           </div>
           <div className="flex-1">
             <div>
+              <input
+                className="w-full p-2 border rounded mb-2"
+                type="text"
+                placeholder="Email Address"
+                value={emailAddress}
+                onChange={e => setEmailAddress(e.target.value)}
+              />
               <input
                 className="w-full p-2 border rounded mb-2"
                 type="text"
