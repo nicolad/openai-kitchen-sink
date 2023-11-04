@@ -1,9 +1,9 @@
 'use client'
 
 import { useChat, type Message } from 'ai/react'
+import axios from 'axios' // import axios library
 
 import { cn } from '@/lib/utils'
-import { ChatList } from '@/components/chat-list'
 import { ChatPanel } from '@/components/chat-panel'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
@@ -67,6 +67,21 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     }
   }, [lastMessage])
 
+  const handleSendEmail = useCallback(async () => {
+    try {
+      const response = await axios.post('/api/email', {
+        subject: emailSubject,
+        body: emailBody,
+        recipientName
+      })
+      if (response.status === 200) {
+        toast.success('Email sent successfully')
+      }
+    } catch (error) {
+      toast.error('There was an error sending the email')
+    }
+  }, [emailSubject, emailBody, recipientName])
+
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
@@ -86,7 +101,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
               onChange={e => setRecipientName(e.target.value)}
             />
           </div>
-
           <div className="flex-1 ">
             <input
               className="w-full p-2 border rounded mb-2"
@@ -103,6 +117,10 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             ></textarea>
           </div>
         </div>
+        <div className="flex justify-center">
+          <button onClick={handleSendEmail}>Send Email</button>
+        </div>
+
         {messages.length ? (
           <>
             <ChatScrollAnchor trackVisibility={isLoading} />
