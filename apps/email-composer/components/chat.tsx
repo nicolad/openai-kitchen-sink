@@ -35,7 +35,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const [emailContext, setEmailContext] = useState('') // For storing the email context
   const [emailSubject, setEmailSubject] = useState('')
   const [emailBody, setEmailBody] = useState('')
-  // recipient name
   const [recipientName, setRecipientName] = useState('')
 
   const { messages, append, reload, stop, isLoading, input, setInput } =

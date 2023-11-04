@@ -9,6 +9,8 @@ type Data = {
 export async function POST(req: NextRequest) {
   try {
     const { body, subject } = await req.json()
+    const html = body.replace(/\n/g, '<br>')
+
     const transporter = nodemailer.createTransport({
       // host: process.env.MAILER_HOST,
       host: 'smtp.gmail.com',
@@ -25,7 +27,7 @@ export async function POST(req: NextRequest) {
       from: 'nicolai.vadim@gmail.com',
       to: 'nicolai.vadim@gmail.com',
       subject: subject,
-      html: body
+      html
     })
 
     if (info.messageId) {

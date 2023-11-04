@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Message as VercelChatMessage, StreamingTextResponse } from 'ai'
-import { Configuration, OpenAIApi } from 'openai-edge'
 
 import { z } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
@@ -15,7 +13,9 @@ const TEMPLATE = `Extract the requested fields from the input.
 
 The field "entity" refers to the first mentioned entity in the input.
 
-Write a email
+Write a short email
+
+in the [Your Name] field, write "Vadim Nicolai"
 
 Input:
 
