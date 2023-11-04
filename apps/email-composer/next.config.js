@@ -1,18 +1,17 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
   reactStrictMode: true,
+  experimental: {
+    serverActions: true,
+  },
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "replicate.com",
-      },
-      {
-        protocol: "https",
-        hostname: "replicate.delivery",
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        port: '',
+        pathname: '**',
       },
     ],
   },
 };
-
-module.exports = nextConfig;

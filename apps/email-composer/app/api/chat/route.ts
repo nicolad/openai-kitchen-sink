@@ -11,10 +11,6 @@ import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 
 export const runtime = 'edge'
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
-})
-
 const TEMPLATE = `Extract the requested fields from the input.
 
 The field "entity" refers to the first mentioned entity in the input.
