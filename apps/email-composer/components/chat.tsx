@@ -5,7 +5,6 @@ import axios from 'axios' // import axios library
 
 import { cn } from '@/lib/utils'
 import { ChatPanel } from '@/components/chat-panel'
-import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import {
   Dialog,
@@ -100,45 +99,48 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
               value={recipientName}
               onChange={e => setRecipientName(e.target.value)}
             />
-          </div>
-          <div className="flex-1 ">
-            <input
-              className="w-full p-2 border rounded mb-2"
-              type="text"
-              placeholder="Email Subject"
-              value={emailSubject}
-              onChange={e => setEmailSubject(e.target.value)}
-            />
-            <textarea
-              className="w-full h-32 p-2 border rounded"
-              placeholder="Email Body"
-              value={emailBody}
-              onChange={e => setEmailBody(e.target.value)}
-            ></textarea>
-          </div>
-        </div>
-        <div className="flex justify-center">
-          <button onClick={handleSendEmail}>Send Email</button>
-        </div>
 
-        {messages.length ? (
-          <>
-            <ChatScrollAnchor trackVisibility={isLoading} />
-          </>
-        ) : null}
+            <ChatPanel
+              id={id}
+              emailContext={emailContext}
+              recipientName={recipientName}
+              isLoading={isLoading}
+              stop={stop}
+              append={append}
+              reload={reload}
+              messages={messages}
+              input={input}
+              setInput={setInput}
+            />
+          </div>
+          <div className="flex-1">
+            <div>
+              <input
+                className="w-full p-2 border rounded mb-2"
+                type="text"
+                placeholder="Email Subject"
+                value={emailSubject}
+                onChange={e => setEmailSubject(e.target.value)}
+              />
+              <textarea
+                className="w-full h-32 p-2 border rounded"
+                placeholder="Email Body"
+                value={emailBody}
+                onChange={e => setEmailBody(e.target.value)}
+              ></textarea>
+            </div>
+            <div className="flex justify-center">
+              <button
+                onClick={handleSendEmail}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Send Email
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <ChatPanel
-        id={id}
-        emailContext={emailContext}
-        recipientName={recipientName}
-        isLoading={isLoading}
-        stop={stop}
-        append={append}
-        reload={reload}
-        messages={messages}
-        input={input}
-        setInput={setInput}
-      />
+
       <Dialog open={previewTokenDialog} onOpenChange={setPreviewTokenDialog}>
         <DialogContent>
           <DialogHeader>

@@ -4,7 +4,7 @@ import { getSharedChat } from '@/app/actions'
 
 export const runtime = 'edge'
 
-export const alt = 'AI Chatbot'
+export const alt = 'Email composer'
 
 export const size = {
   width: 1200,
