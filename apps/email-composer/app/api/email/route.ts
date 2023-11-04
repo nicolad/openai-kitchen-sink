@@ -18,7 +18,6 @@ export async function POST(req: NextRequest) {
     })
 
     const info: SentMessageInfo = await transporter.sendMail({
-      // from: email as string,
       from: 'nicolai.vadim@gmail.com',
       to: emailAddress,
       subject: subject,

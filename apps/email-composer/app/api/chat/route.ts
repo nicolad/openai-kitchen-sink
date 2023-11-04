@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-
 import { z } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
-
 import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { PromptTemplate } from 'langchain/prompts'
 import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
@@ -10,8 +8,6 @@ import { JsonOutputFunctionsParser } from 'langchain/output_parsers'
 export const runtime = 'edge'
 
 const TEMPLATE = `Extract the requested fields from the input.
-
-The field "entity" refers to the first mentioned entity in the input.
 
 Write a short email
 
@@ -34,19 +30,12 @@ export async function POST(req: NextRequest) {
     const currentMessageContent = messages[messages.length - 1].content
 
     const prompt = PromptTemplate.fromTemplate(TEMPLATE)
-    /**
-     * Function calling is currently only supported with ChatOpenAI models
-     */
     const model = new ChatOpenAI({
       temperature: 0.8,
       modelName: 'gpt-4',
       openAIApiKey: process.env.OPENAI_API_KEY
     })
 
-    /**
-     * We use Zod (https://zod.dev) to define our schema for convenience,
-     * but you can pass JSON Schema directly if desired.
-     */
     const schema = z.object({
       subject: z.string().describe('Email subject'),
       body: z.string().describe('Email body')
@@ -63,9 +52,6 @@ export async function POST(req: NextRequest) {
       function_call: { name: 'output_formatter' }
     })
 
-    /**
-     * Returns a chain with the function calling model.
-     */
     const chain = prompt
       .pipe(functionCallingModel)
       .pipe(new JsonOutputFunctionsParser())
