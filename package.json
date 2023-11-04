@@ -4,6 +4,7 @@
     "build": "turbo build",
     "clean": "turbo clean",
     "dev": "turbo dev --no-cache  --continue",
+    "dev:blog": "turbo dev --no-cache  --continue --filter=...{./apps/blog}",
     "dev:email": "turbo dev --no-cache  --continue --filter=...{./apps/email-composer}",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
