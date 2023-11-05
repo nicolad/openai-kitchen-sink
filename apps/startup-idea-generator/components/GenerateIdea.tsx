@@ -28,13 +28,14 @@ export default function GenerateIdea() {
             placeholder="Industry, technology, or problem"
           />
         </label>
-
         <button
           disabled={isLoading}
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className={`font-bold py-2 px-4 rounded text-white ${
+            isLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-700'
+          }`}
         >
-          Generate Idea
+          {isLoading ? 'Loading...' : 'Generate Idea'}
         </button>
       </form>
       <output>
