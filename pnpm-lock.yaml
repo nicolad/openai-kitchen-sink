@@ -384,7 +384,7 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
 
-  apps/llava-13b:
+  apps/llava:
     dependencies:
       '@bytescale/upload-widget-react':
         specifier: ^4.10.0

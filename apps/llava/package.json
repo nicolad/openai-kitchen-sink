@@ -1,5 +1,5 @@
 {
-  "name": "llava-13b",
+  "name": "llava",
   "version": "0.1.0",
   "private": true,
   "scripts": {
