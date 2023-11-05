@@ -58,10 +58,9 @@ importers:
       '@vercel/analytics': ^1.0.0
       '@vercel/kv': ^0.2.1
       '@vercel/og': ^0.5.7
-      ai: ^2.1.6
+      ai: ^2.2.20
       autoprefixer: ^10.4.13
       axios: ^1.4.0
-      class-variance-authority: ^0.4.0
       clsx: ^1.2.1
       eslint: ^8.31.0
       eslint-config-next: 13.4.7-canary.1
@@ -105,9 +104,8 @@ importers:
       '@vercel/analytics': 1.1.1
       '@vercel/kv': 0.2.3
       '@vercel/og': 0.5.20
-      ai: 2.2.20_react@18.2.0
+      ai: 2.2.20_3hpmajmwzuqqxma73t5lf4dhei
       axios: 1.4.0
-      class-variance-authority: 0.4.0_typescript@5.1.6
       clsx: 1.2.1
       focus-trap-react: 10.2.3_v2m5e27vhdewzwhryxwfaorcca
       langchain: 0.0.175_tzjgcgsx36f3s6bmw4ho5awng4
@@ -119,7 +117,7 @@ importers:
       openai-edge: 0.5.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-hot-toast: 2.4.1_biqbaboplfbrettd7655fr4n2y
+      react-hot-toast: 2.4.1_s7mghcr6idhb4d5ook54gl4n44
       react-intersection-observer: 9.5.2_react@18.2.0
       react-markdown: 8.0.7_i73ekzlbntu7jol6ph2fvy4mga
       react-syntax-highlighter: 15.5.0_react@18.2.0
@@ -286,10 +284,9 @@ importers:
       '@vercel/analytics': ^1.0.0
       '@vercel/kv': ^0.2.1
       '@vercel/og': ^0.5.7
-      ai: ^2.1.6
+      ai: ^2.2.20
       autoprefixer: ^10.4.13
       axios: ^1.4.0
-      class-variance-authority: ^0.4.0
       clsx: ^1.2.1
       eslint: ^8.31.0
       eslint-config-next: 13.4.7-canary.1
@@ -333,9 +330,8 @@ importers:
       '@vercel/analytics': 1.1.1
       '@vercel/kv': 0.2.3
       '@vercel/og': 0.5.20
-      ai: 2.2.20_3hpmajmwzuqqxma73t5lf4dhei
+      ai: 2.2.20_react@18.2.0
       axios: 1.4.0
-      class-variance-authority: 0.4.0_typescript@5.1.6
       clsx: 1.2.1
       focus-trap-react: 10.2.3_v2m5e27vhdewzwhryxwfaorcca
       langchain: 0.0.175_tzjgcgsx36f3s6bmw4ho5awng4
@@ -347,7 +343,7 @@ importers:
       openai-edge: 0.5.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-hot-toast: 2.4.1_s7mghcr6idhb4d5ook54gl4n44
+      react-hot-toast: 2.4.1_biqbaboplfbrettd7655fr4n2y
       react-intersection-observer: 9.5.2_react@18.2.0
       react-markdown: 8.0.7_i73ekzlbntu7jol6ph2fvy4mga
       react-syntax-highlighter: 15.5.0_react@18.2.0
@@ -7846,17 +7842,6 @@ packages:
       define-property: 0.2.5
       isobject: 3.0.1
       static-extend: 0.1.2
-
-  /class-variance-authority/0.4.0_typescript@5.1.6:
-    resolution: {integrity: sha512-74enNN8O9ZNieycac/y8FxqgyzZhZbxmCitAtAeUrLPlxjSd5zA7LfpprmxEcOmQBnaGs5hYhiSGnJ0mqrtBLQ==}
-    peerDependencies:
-      typescript: '>= 4.5.5 < 5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      typescript: 5.1.6
-    dev: false
 
   /classnames/2.3.2:
     resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
