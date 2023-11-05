@@ -7,6 +7,7 @@
     "dev:blog": "turbo dev --no-cache  --continue --filter=...{./apps/blog}",
     "dev:email": "turbo dev --no-cache  --continue --filter=...{./apps/email-composer}",
     "dev:startup-idea-generator": "turbo dev --no-cache  --continue --filter=...{./apps/startup-idea-generator}",
+    "dev:yt-loader": "turbo dev --no-cache  --continue --filter=...{./apps/yt-loader}",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
     "test": "turbo test"
