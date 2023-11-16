@@ -53,17 +53,7 @@ return res.send(stream.toReadableStream());
 
 #### Client-Side: Consuming the Stream with React
 
-The client-side involves a React component that sends requests to the server and processes the streamed responses:
-
-```javascript
-const Chat = () => {
-  // State initialization for input and response
-  const handleSubmit = async (e) => {
-    // Form submission handler
-  }
-```
-
-- A `Chat` component is defined with states for storing user input and server responses. The `handleSubmit` function manages form submissions.
+The client-side involves a React component that sends requests to the server and processes the streamed responses.
 
 ```javascript
 const response = await fetch("/api/chat", {
@@ -92,4 +82,6 @@ while (true) {
 
 #### Conclusion
 
-Combining Next.js and React with OpenAI's beta streaming functionality offers a powerful way to create interactive, AI-driven web applications. The server-side component in Next.js efficiently handles and streams AI responses, while the React client provides an intuitive interface for users to interact with the AI. This setup showcases the potential of modern web technologies in harnessing the power of AI for dynamic and engaging user experiences.
+Combining Next.js and React with OpenAI's beta streaming functionality offers a powerful way to create interactive, AI-driven web applications.
+
+The server-side component in Next.js efficiently handles and streams AI responses, while the React client provides an intuitive interface for users to interact with the AI. This setup showcases the potential of modern web technologies in harnessing the power of AI for dynamic and engaging user experiences.
