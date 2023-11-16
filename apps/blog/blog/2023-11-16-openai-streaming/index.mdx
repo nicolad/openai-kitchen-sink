@@ -1,0 +1,95 @@
+---
+slug: openai-streaming
+title: Implementing OpenAI Beta Streaming in Next.js and React
+authors: [nicolad]
+image: image.png
+---
+
+OpenAI has simplified real-time AI interactions in web applications by introducing the `openai.beta.chat.completions.stream` function.
+
+This advancement eliminates the need for complex wrappers, simplifying the integration of AI-driven functionalities into web apps.
+
+This article will explore how to leverage this feature in a Next.js server and consume the streamed data in a React client.
+
+#### Server-Side: Streaming with OpenAI and Next.js
+
+The server-side implementation involves setting up an API endpoint in Next.js that streams data from OpenAI's beta API. Here's a breakdown of the code:
+
+```javascript
+import OpenAI from "openai";
+import type { NextApiRequest, NextApiResponse } from "next";
+```
+
+- The `OpenAI` library is imported for interacting with the OpenAI API. Additionally, Next.js types for API requests and responses are included to aid in developing the endpoint.
+
+```javascript
+export const runtime = "edge";
+```
+
+- The server function is configured to run on Vercel's Edge Network, facilitating low-latency responses.
+
+```javascript
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const openai = new OpenAI();
+```
+
+- An asynchronous handler function is defined to process incoming requests. It utilizes the OpenAI client initialized here.
+
+```javascript
+const stream = openai.beta.chat.completions.stream({
+  model: "gpt-3.5-turbo",
+  stream: true,
+  messages: [{ role: "user", content: await req.text() }],
+});
+```
+
+- The stream is created using OpenAI's chat completion feature. It is configured to use the `gpt-3.5-turbo` model and initialized with the user's message from the request.
+
+```javascript
+return res.send(stream.toReadableStream());
+```
+
+- The chat stream is converted to a readable stream and sent as the response, enabling real-time data streaming to the client.
+
+#### Client-Side: Consuming the Stream with React
+
+The client-side involves a React component that sends requests to the server and processes the streamed responses:
+
+```javascript
+const Chat = () => {
+  // State initialization for input and response
+  const handleSubmit = async (e) => {
+    // Form submission handler
+  }
+```
+
+- A `Chat` component is defined with states for storing user input and server responses. The `handleSubmit` function manages form submissions.
+
+```javascript
+const response = await fetch("/api/chat", {
+  method: "POST",
+  body: JSON.stringify({ content: inputText }),
+  headers: { "Content-Type": "application/json" },
+});
+```
+
+- A POST request is sent to the Next.js API endpoint. The user's input is included in the request body.
+
+```javascript
+const reader = response?.body?.getReader();
+const decoder = new TextDecoder();
+```
+
+- A stream reader and a `TextDecoder` are initialized to read and decode the streamed data from the server.
+
+```javascript
+while (true) {
+  // Loop to read and process the stream
+}
+```
+
+- An infinite loop reads from the stream. Each received chunk is decoded and split into lines, which are then parsed as JSON.
+
+#### Conclusion
+
+Combining Next.js and React with OpenAI's beta streaming functionality offers a powerful way to create interactive, AI-driven web applications. The server-side component in Next.js efficiently handles and streams AI responses, while the React client provides an intuitive interface for users to interact with the AI. This setup showcases the potential of modern web technologies in harnessing the power of AI for dynamic and engaging user experiences.
