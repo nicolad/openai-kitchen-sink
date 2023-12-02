@@ -1,105 +1,87 @@
 ---
-slug: openai-law-copilot
-title: Creating an OpenAI Law Copilot - A Guide to Building an AI Legal Assistant
+slug: openai-streaming
+title: Implementing OpenAI Beta Streaming in Next.js
 authors: [nicolad]
 image: image.png
 ---
 
-The integration of AI in legal services is a rapidly growing field. Leveraging OpenAI's capabilities, one can create a Law Copilot, an AI legal assistant, to handle various legal tasks efficiently. The following article will guide you through setting up such a system using OpenAI's API, the JavaScript runtime environment Node.js, and various other tools.
+OpenAI has simplified real-time AI interactions in web applications by introducing the `openai.beta.chat.completions.stream` function.
 
-#### Initial Setup and Requirements
+This advancement eliminates the need for complex wrappers, simplifying the integration of AI-driven functionalities into web apps.
 
-1. **Environment Setup**:
+This article will explore how to leverage this feature in a Next.js server and consume the streamed data in a React client.
 
-   - Utilize `dotenv` for environment variable management.
-   - Import OpenAI and other necessary modules like `fs` for file handling.
+#### Server-Side: Streaming with OpenAI and Next.js
 
-2. **Configuration**:
+The server-side implementation involves setting up an API endpoint in Next.js that streams data from OpenAI's beta API. Here's a breakdown of the code:
 
-   - Set up your OpenAI API key and other necessary configurations in your environment.
+```javascript
+import OpenAI from "openai";
+import type { NextApiRequest, NextApiResponse } from "next";
+```
 
-   ```javascript
-   import dotenv from "dotenv";
-   import OpenAI from "openai";
+- The `OpenAI` library is imported for interacting with the OpenAI API. Additionally, Next.js types for API requests and responses are included to aid in developing the endpoint.
 
-   dotenv.config();
-   const openai = new OpenAI({
-     apiKey: process.env.OPENAI_API_KEY,
-   });
-   ```
+```javascript
+export const runtime = "edge";
+```
 
-3. **Knowledge Integration**:
+- The server function is configured to run on Vercel's Edge Network, facilitating low-latency responses.
 
-   - Create a knowledge base for the AI by uploading a legal document (e.g., "knowledge.pdf") to OpenAI.
-   - Use `fs.createReadStream` to read the document file.
+```javascript
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const openai = new OpenAI();
+```
 
-   ```javascript
-   const file = await openai.files.create({
-     file: fs.createReadStream("knowledge.pdf"),
-     purpose: "assistants",
-   });
-   ```
+- An asynchronous handler function is defined to process incoming requests. It utilizes the OpenAI client initialized here.
 
-#### Building the Legal Assistant
+```javascript
+const stream = openai.beta.chat.completions.stream({
+  model: "gpt-3.5-turbo",
+  stream: true,
+  messages: [{ role: "user", content: await req.text() }],
+});
+```
 
-1. **Assistant Creation**:
+- The stream is created using OpenAI's chat completion feature. It is configured to use the `gpt-3.5-turbo` model and initialized with the user's message from the request.
 
-   - Develop an assistant using OpenAI's API with specific instructions that define its role as a legal assistant.
-   - Include the uploaded file as a reference for legal queries.
+```javascript
+return res.send(stream.toReadableStream());
+```
 
-   ```javascript
-   const assistant = await openai.beta.assistants.create({
-     instructions: `
-       You are a legal assistant chatbot. Utilize your legal knowledge database to effectively address client inquiries.
-     `,
-     model: "gpt-4-1106-preview",
-     tools: [{ type: "retrieval" }],
-     file_ids: [file.id],
-   });
-   ```
+- The chat stream is converted to a readable stream and sent as the response, enabling real-time data streaming to the client.
 
-2. **Client-Side Integration**:
+#### Client-Side: Consuming the Stream with React
 
-   - Use React for the client-side, allowing users to interact with the AI.
-   - Implement a chat interface using components like `MessagesField` and `CustomizedInputBase`.
-   - Manage the state to handle messages and AI responses.
+The client-side involves a React component that sends requests to the server and processes the streamed responses.
 
-   ```javascript
-   const Chat = () => {
-     // React states and functions
-   };
-   export default Chat;
-   ```
+```javascript
+const response = await fetch("/api/chat", {
+  method: "POST",
+  body: JSON.stringify({ content: inputText }),
+  headers: { "Content-Type": "application/json" },
+});
+```
 
-#### Handling Requests and Responses
+- A POST request is sent to the Next.js API endpoint. The user's input is included in the request body.
 
-1. **API Endpoint Setup**:
+```javascript
+const reader = response?.body?.getReader();
+const decoder = new TextDecoder();
+```
 
-   - Set up API endpoints using Next.js to handle user requests and fetch AI responses.
-   - Use `createClient` from `@vercel/kv` to manage key-value data.
+- A stream reader and a `TextDecoder` are initialized to read and decode the streamed data from the server.
 
-   ```javascript
-   export async function POST(req: Request) {
-     // Code to handle POST requests
-   }
+```javascript
+while (true) {
+  // Loop to read and process the stream
+}
+```
 
-   export async function GET(req: Request) {
-     // Code to handle GET requests
-   }
-   ```
-
-2. **AI Interaction**:
-
-   - Send user queries to OpenAI's assistant and receive responses.
-   - Store session data like `threadId` and `runId` for continuous interaction.
-
-   ```javascript
-   const run = await openai.beta.threads.createAndRun({
-     assistant_id: assistantId as string,
-     // More code here
-   });
-   ```
+- An infinite loop reads from the stream. Each received chunk is decoded and split into lines, which are then parsed as JSON.
 
 #### Conclusion
 
-By integrating OpenAI's API with a Node.js backend and a React frontend, you can create a Law Copilot, an AI-powered legal assistant. This assistant can process legal documents, respond to inquiries, and provide valuable legal insights, making it a valuable tool for law professionals and individuals seeking legal assistance. With continued advancements in AI, the potential applications of such a system are vast and exciting.
+Combining Next.js and React with OpenAI's beta streaming functionality offers a powerful way to create interactive, AI-driven web applications.
+
+The server-side component in Next.js efficiently handles and streams AI responses, while the React client provides an intuitive interface for users to interact with the AI. This setup showcases the potential of modern web technologies in harnessing the power of AI for dynamic and engaging user experiences.
