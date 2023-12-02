@@ -94,6 +94,7 @@ export async function POST(req: Request) {
 
   const runner = await openai.beta.chat.completions.runFunctions({
     model: 'gpt-3.5-turbo',
+    stream: false,
     messages: [
       {
         role: 'system',
